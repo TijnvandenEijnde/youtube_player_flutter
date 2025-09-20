@@ -82,6 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _controller = YoutubePlayerController(
       initialVideoId: _ids.first,
       flags: const YoutubePlayerFlags(
+        captionLanguage: 'en',
         mute: false,
         autoPlay: true,
         disableDragSeek: false,
