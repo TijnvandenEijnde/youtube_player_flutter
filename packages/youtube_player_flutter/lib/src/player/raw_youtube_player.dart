@@ -214,14 +214,6 @@ class _RawYoutubePlayerState extends State<RawYoutubePlayer>
                   ),
                 );
               },
-            )
-            ..addJavaScriptHandler(
-              handlerName: 'AvailableGeneratedCaptionLanguages',
-              callback: (List<dynamic> args) {
-                // {languageCode: uk, languageName: Ukrainian}
-
-                print(args.first);
-              },
             );
         },
         onLoadStop: (_, __) {
@@ -389,37 +381,11 @@ class _RawYoutubePlayerState extends State<RawYoutubePlayer>
                 document.getElementById("player").style.marginTop = margin;
                 return '';
             }
-            
-            function getAvailableGeneratedCaptionLanguages() {
-                try {
-                    var languages = player.getOption('captions', 'translationLanguages');
-                    window.flutter_inappwebview.callHandler('AvailableGeneratedCaptionLanguages', languages);
-                } catch (error) {
-                    return 'error: ' + error.message;
-                }
-            }
 
             function setGeneratedCaptionLanguage(languageCode) {
                 try {
                     player.setOption('captions', 'track', {'languageCode': languageCode});
                     player.setOption('captions', 'reload', true);
-                } catch (error) {
-                    return 'error: ' + error.message;
-                }
-            }
-
-            function enableCaptions() {
-                try {
-                    player.setOption('captions', 'displaySettings', {'windowOpacity': 1});
-                    player.setOption('captions', 'fontSize', 1);
-                } catch (error) {
-                    return 'error: ' + error.message;
-                }
-            }
-
-            function disableCaptions() {
-                try {
-                    player.setOption('captions', 'displaySettings', {'windowOpacity': 0});
                 } catch (error) {
                     return 'error: ' + error.message;
                 }
