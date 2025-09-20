@@ -216,12 +216,10 @@ class _RawYoutubePlayerState extends State<RawYoutubePlayer>
               },
             )
             ..addJavaScriptHandler(
-              handlerName: 'enableCaption',
+              handlerName: 'showCaption',
               callback: (args) {
                 controller!.updateValue(
-                  controller!.value.copyWith(
-
-                  ),
+                  controller!.value.copyWith(showCaption: args.first),
                 );
               },
             );
@@ -403,9 +401,7 @@ class _RawYoutubePlayerState extends State<RawYoutubePlayer>
                 }
             }
             
-            var captionsVisible = ${boolean(value: controller!.flags.enableCaption)};
-            
-            function toggleCaptionsDisplay(languageCode) {
+            function toggleCaptionsDisplay(languageCode, showCaption) {
                 try {
                     if (!player || !player.loadModule) {
                         return;
@@ -413,12 +409,12 @@ class _RawYoutubePlayerState extends State<RawYoutubePlayer>
             
                     player.loadModule('captions');
             
-                    if (captionsVisible) {
+                    if (showCaption) {
                         player.setOption('captions', 'track', {});
-                        captionsVisible = false;
+                        window.flutter_inappwebview.callHandler('showCaption', false);
                     } else {
                         setGeneratedCaptionLanguage(languageCode)
-                        captionsVisible = true;
+                        window.flutter_inappwebview.callHandler('showCaption', true);
                     }
                 } catch (error) {
                     window.flutter_inappwebview.callHandler('Errors', error.message);

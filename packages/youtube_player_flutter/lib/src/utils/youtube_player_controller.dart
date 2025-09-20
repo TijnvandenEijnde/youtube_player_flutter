@@ -19,6 +19,7 @@ class YoutubePlayerValue {
   /// The duration, current position, buffering state, error state and settings
   /// of a [YoutubePlayerController].
   YoutubePlayerValue({
+    required this.showCaption,
     this.isReady = false,
     this.isControlsVisible = false,
     this.hasPlayed = false,
@@ -86,9 +87,13 @@ class YoutubePlayerValue {
   /// Returns meta data of the currently loaded/cued video.
   final YoutubeMetaData metaData;
 
+  /// Returns true if captions are shown.
+  final bool showCaption;
+
   /// Creates new [YoutubePlayerValue] with assigned parameters and overrides
   /// the old one.
   YoutubePlayerValue copyWith({
+    bool? showCaption,
     bool? isReady,
     bool? isControlsVisible,
     bool? isLoaded,
@@ -107,6 +112,7 @@ class YoutubePlayerValue {
     YoutubeMetaData? metaData,
   }) {
     return YoutubePlayerValue(
+      showCaption: showCaption ?? this.showCaption,
       isReady: isReady ?? this.isReady,
       isControlsVisible: isControlsVisible ?? this.isControlsVisible,
       hasPlayed: hasPlayed ?? this.hasPlayed,
@@ -128,6 +134,7 @@ class YoutubePlayerValue {
   @override
   String toString() {
     return '$runtimeType('
+        'showCaption: $showCaption, '
         'metaData: ${metaData.toString()}, '
         'isReady: $isReady, '
         'isControlsVisible: $isControlsVisible, '
@@ -161,7 +168,7 @@ class YoutubePlayerController extends ValueNotifier<YoutubePlayerValue> {
   YoutubePlayerController({
     required this.initialVideoId,
     this.flags = const YoutubePlayerFlags(),
-  }) : super(YoutubePlayerValue());
+  }) : super(YoutubePlayerValue(showCaption: flags.enableCaption));
 
   /// Finds [YoutubePlayerController] in the provided context.
   static YoutubePlayerController? of(BuildContext context) {
@@ -230,8 +237,8 @@ class YoutubePlayerController extends ValueNotifier<YoutubePlayerValue> {
     );
   }
 
-  void toggleCaptions() => _callMethod(
-        'toggleCaptionsDisplay("${flags.captionLanguage}")',
+  void toggleCaptions(bool showCaption) => _callMethod(
+        'toggleCaptionsDisplay("${flags.captionLanguage}", $showCaption)',
       );
 
   /// Mutes the player.

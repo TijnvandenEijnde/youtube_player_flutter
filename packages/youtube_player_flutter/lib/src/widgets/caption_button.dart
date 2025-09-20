@@ -60,10 +60,14 @@ class _CaptionButtonState extends State<CaptionButton> {
   Widget build(BuildContext context) {
     return IconButton(
       icon: Icon(
-        Icons.closed_caption,
+        _controller.value.showCaption
+            ? Icons.closed_caption
+            : Icons.closed_caption_disabled,
         color: widget.color,
       ),
-      onPressed: () => _controller.toggleCaptions(),
+      onPressed: () => _controller.toggleCaptions(
+        _controller.value.showCaption,
+      ),
     );
   }
 }
