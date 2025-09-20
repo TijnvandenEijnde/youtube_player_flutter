@@ -230,6 +230,10 @@ class YoutubePlayerController extends ValueNotifier<YoutubePlayerValue> {
     );
   }
 
+  void toggleCaptions() => _callMethod(
+        'toggleCaptionsDisplay("${flags.captionLanguage}")',
+      );
+
   /// Mutes the player.
   void mute() => _callMethod('mute()');
 

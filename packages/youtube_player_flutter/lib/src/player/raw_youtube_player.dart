@@ -214,6 +214,16 @@ class _RawYoutubePlayerState extends State<RawYoutubePlayer>
                   ),
                 );
               },
+            )
+            ..addJavaScriptHandler(
+              handlerName: 'enableCaption',
+              callback: (args) {
+                controller!.updateValue(
+                  controller!.value.copyWith(
+
+                  ),
+                );
+              },
             );
         },
         onLoadStop: (_, __) {
@@ -280,9 +290,11 @@ class _RawYoutubePlayerState extends State<RawYoutubePlayer>
                         onReady: function(event) { 
                             window.flutter_inappwebview.callHandler('Ready');
 
-                            setTimeout(function() {
-                                setGeneratedCaptionLanguage("${controller!.flags.captionLanguage}");
-                            }, 500);
+                            if (${boolean(value: controller!.flags.enableCaption)}) {
+                                setTimeout(function() {
+                                    setGeneratedCaptionLanguage('${controller!.flags.captionLanguage}');
+                              }, 500);
+                            }
                         },
                         onStateChange: function(event) { sendPlayerStateChange(event.data); },
                         onPlaybackQualityChange: function(event) { window.flutter_inappwebview.callHandler('PlaybackQualityChange', event.data); },
@@ -387,9 +399,32 @@ class _RawYoutubePlayerState extends State<RawYoutubePlayer>
                     player.setOption('captions', 'track', {'languageCode': languageCode});
                     player.setOption('captions', 'reload', true);
                 } catch (error) {
-                    return 'error: ' + error.message;
+                    window.flutter_inappwebview.callHandler('Errors', error.message);
                 }
             }
+            
+            var captionsVisible = ${boolean(value: controller!.flags.enableCaption)};
+            
+            function toggleCaptionsDisplay(languageCode) {
+                try {
+                    if (!player || !player.loadModule) {
+                        return;
+                    }
+            
+                    player.loadModule('captions');
+            
+                    if (captionsVisible) {
+                        player.setOption('captions', 'track', {});
+                        captionsVisible = false;
+                    } else {
+                        setGeneratedCaptionLanguage(languageCode)
+                        captionsVisible = true;
+                    }
+                } catch (error) {
+                    window.flutter_inappwebview.callHandler('Errors', error.message);
+                }
+            }
+
         </script>
     </body>
     </html>

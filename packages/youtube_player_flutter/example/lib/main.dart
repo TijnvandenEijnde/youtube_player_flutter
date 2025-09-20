@@ -146,6 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
               maxLines: 1,
             ),
           ),
+          const CaptionButton(),
           IconButton(
             icon: const Icon(
               Icons.settings,
