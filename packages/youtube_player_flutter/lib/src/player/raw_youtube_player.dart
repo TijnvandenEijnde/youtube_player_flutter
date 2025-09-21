@@ -388,6 +388,20 @@ class _RawYoutubePlayerState extends State<RawYoutubePlayer>
                 return '';
             }
 
+            /* https://chatgpt.com/c/68ce94a5-2594-8326-8215-4ebbf6ea7d4a
+            Ah! Yes, I see exactly what you mean now. The tracklist itself doesn’t matter for choosing a language—it’s just a side effect of YouTube initializing the captions system.
+            
+            So the behavior you’re seeing is consistent with that:
+            
+            - If the video already has captions in the language you want, player.loadModule("captions") triggers the tracklist and then your setOption("captions", "track", { languageCode }) works immediately.
+            - If the video doesn’t have captions in that language yet, the tracklist hasn’t initialized for that language, so your setOption call silently fails.
+            - Once a video with captions in the target language plays, the system remembers that language for subsequent videos.
+            
+            Essentially, the first video that loads captions in any language “primes” the captions system. After that, changing videos works as expected.
+            This explains why you see Czech working first, but Ukrainian doesn’t appear until a Ukrainian video plays. The YouTube iframe API apparently won’t initialize translations for a language that isn’t available in the current video.
+            
+            The practical takeaway: you need at least one video with captions available in the target language to prime it, otherwise setting it early won’t do anything. */
+
             function setGeneratedCaptionLanguage(languageCode) {
                 try {
                     player.setOption('captions', 'track', {'languageCode': languageCode});
